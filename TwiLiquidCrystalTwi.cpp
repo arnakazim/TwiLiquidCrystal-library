@@ -40,7 +40,7 @@ void TwiLiquidCrystal::writeQuartet(uint8_t data) {
   write(data | EN_BIT); // pulse enable
   delayMicroseconds(1);
   write(data);
-  delayMicroseconds(40);
+  delayMicroseconds(42);
 }
 
 // Take a command byte and split it in two quarter (LCD in 4 bit mode)
@@ -137,6 +137,18 @@ void TwiLiquidCrystal::begin() {
   setDsplControl(1, 0, 0);
   setEntryMode(1, 0);
   home();
+}
+
+void TwiLiquidCrystal::createChar(uint8_t number, uint8_t character[]) {
+  
+  
+    number &= 0x7; // 7 editable characters
+    writeCmd(LCD_SETCGRAMADDR | (number << 3));
+    _ctrlRegister |= RS_BIT; // Set register to DATA
+    for (uint8_t i=0; i<8; i++) {
+      writeCmd(character[i]);
+    }
+    _ctrlRegister &= ~RS_BIT; // Reset register to INSTRUCTION
 }
 
 void TwiLiquidCrystal::backlight() {

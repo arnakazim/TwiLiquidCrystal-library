@@ -95,15 +95,16 @@ public:
     void setBacklight(bool state);
     void clear();
     void home();
+    void createChar(uint8_t number, uint8_t character[]);
 
     // Faster than using LiquidCrystal Library compatible functions
-    // Set multiple bits, send once
+    // Set multiple bits, send one time
     void setFctnRegister(uint8_t bytemode, uint8_t lines, uint8_t font);
     void setDsplControl(uint8_t display, uint8_t cursor, uint8_t blink);
     void setEntryMode(uint8_t increment, uint8_t shift);
 
     // LiquidCrystal Library compatible functions
-    // Set one bit, send one bit
+    // Set one bit, send one time
     void backlight();
     void noBacklight();
     void display();

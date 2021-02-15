@@ -1,10 +1,24 @@
 #include <TwiLiquidCrystal.h>
 
+uint8_t customChar[] = {
+  0b00000,
+  0b00000,
+  0b00100,
+  0b00000,
+  0b00001,
+  0b00000,
+  0b10101,
+  0b00000
+};
+
 TwiLiquidCrystal lcd = TwiLiquidCrystal(0x27, 16, 2, 0);
 
 void setup() {
   // Initialize the LCD
   lcd.begin();
+
+  lcd.createChar(1, customChar);
+  lcd.home();
 }
 
 void loop() {
@@ -40,11 +54,19 @@ void loop() {
   lcd.setCursor(3, 1);
   lcd.print("Hello, World!");
   delay(1000);
+  
+  char txt[] = { 0x01, 0x00};
+  lcd.setCursor(17, 0);
+  lcd.print(txt);
 
-  for(int i = 0; i < 16; i++) {
+  lcd.setCursor(17, 1);
+  lcd.print(txt);
+
+  for(int i = 0; i < 18; i++) {
     lcd.scrollDisplayLeft();
     delay(250);
   }
+  delay(750);
 
   lcd.clear();
 }
