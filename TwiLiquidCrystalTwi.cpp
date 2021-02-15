@@ -22,6 +22,16 @@ void TwiLiquidCrystal::setCtrlRegisterBit(uint8_t bit, bool state) {
   else _ctrlRegister &= ~bit;
 }
 
+void TwiLiquidCrystal::setDsplRegisterBit(uint8_t bit, bool state) {
+  if(state) _dsplRegister |= bit;
+  else _dsplRegister &= ~bit;
+}
+
+void TwiLiquidCrystal::setEntryModeBit(uint8_t bit, bool state) {
+  if(state) _modeRegister |= bit;
+  else _modeRegister &= ~bit;
+}
+
 // Merge the command quartet with the control command (BL EN RW RS)
 void TwiLiquidCrystal::writeQuartet(uint8_t data) {
   data |= _ctrlRegister;
@@ -53,7 +63,7 @@ void TwiLiquidCrystal::print(char* string) {
 }
 
 // Start routine to set the LCD to 4 bit mode
-void TwiLiquidCrystal::set4BitMode() {
+void TwiLiquidCrystal::set4BitModeRoutine() {
   // Init in 8-bit
   writeQuartet(0x30);
   delayMicroseconds(4500); // wait min 4.1ms
@@ -115,7 +125,7 @@ void TwiLiquidCrystal::begin() {
   delay(1000); // LCD power up time
 
   write(0x00); // clear data line
-  set4BitMode();
+  set4BitModeRoutine();
 
   if (_rows > 1) {
     setFctnRegister(0, 2, 0);
@@ -127,4 +137,72 @@ void TwiLiquidCrystal::begin() {
   setDsplControl(1, 0, 0);
   setEntryMode(1, 0);
   home();
+}
+
+void TwiLiquidCrystal::backlight() {
+  setBacklight(true);
+}
+
+void TwiLiquidCrystal::noBacklight() {
+  setBacklight(false);
+}
+
+void TwiLiquidCrystal::display() {
+  setDsplRegisterBit(LCD_DISPLAYCONTROL_D_BIT, true);
+  writeCmd(LCD_DISPLAYCONTROL | _dsplRegister);
+}
+
+void TwiLiquidCrystal::noDisplay() {
+  setDsplRegisterBit(LCD_DISPLAYCONTROL_D_BIT, false);
+  writeCmd(LCD_DISPLAYCONTROL | _dsplRegister);
+}
+
+void TwiLiquidCrystal::blink(){
+  setDsplRegisterBit(LCD_DISPLAYCONTROL_B_BIT, true);
+  writeCmd(LCD_DISPLAYCONTROL | _dsplRegister);
+}
+    
+void TwiLiquidCrystal::noBlink() {
+  setDsplRegisterBit(LCD_DISPLAYCONTROL_B_BIT, false);
+  writeCmd(LCD_DISPLAYCONTROL | _dsplRegister);
+}
+
+void TwiLiquidCrystal::cursor() {
+  setDsplRegisterBit(LCD_DISPLAYCONTROL_C_BIT, true);
+  writeCmd(LCD_DISPLAYCONTROL | _dsplRegister);
+}
+
+void TwiLiquidCrystal::noCursor() {
+  setDsplRegisterBit(LCD_DISPLAYCONTROL_C_BIT, false);
+  writeCmd(LCD_DISPLAYCONTROL | _dsplRegister);
+}
+
+void TwiLiquidCrystal::leftToRight() {
+  setEntryModeBit(LCD_ENTRYMODESET_ID_BIT, true);
+  writeCmd(LCD_ENTRYMODESET | _modeRegister);
+}
+
+// This is for text that flows Right to Left
+void TwiLiquidCrystal::rightToLeft() {
+  setEntryModeBit(LCD_ENTRYMODESET_ID_BIT, false);
+  writeCmd(LCD_ENTRYMODESET | _modeRegister);
+}
+
+void TwiLiquidCrystal::autoscroll(void) {
+  setEntryModeBit(LCD_ENTRYMODESET_S_BIT, true);
+  writeCmd(LCD_ENTRYMODESET | _modeRegister);
+}
+
+// This will 'left justify' text from the cursor
+void TwiLiquidCrystal::noAutoscroll(void) {
+ setEntryModeBit(LCD_ENTRYMODESET_S_BIT, false);
+  writeCmd(LCD_ENTRYMODESET | _modeRegister);
+}
+
+void TwiLiquidCrystal::scrollDisplayLeft(void) {
+  writeCmd(LCD_CURSORSHIFT | LCD_CURSORSHIFT_SC_BIT);
+}
+
+void TwiLiquidCrystal::scrollDisplayRight(void) {
+  writeCmd(LCD_CURSORSHIFT | LCD_CURSORSHIFT_RL_BIT | LCD_CURSORSHIFT_SC_BIT);
 }

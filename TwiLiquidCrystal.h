@@ -22,14 +22,14 @@
  * LCD_CLEARDISPLAY
  * LCD_RETURNHOME
  * LCD_ENTRYMODESET
- *   I/D = 1 -> Increment by 1
+ *   I/D = 1 -> Increment cursor pos
  *   S =   0 -> No shift
  * LCD_DISPLAYCONTROL
  *   D =   0 -> Display off
  *   C =   0 -> Cursor off
  *   B =   0 -> Blinking off
  * LCD_CURSORSHIFT
- *   S/C = 1 -> Shift cursor (0 for screen)
+ *   S/C = 0 -> Shift cursor (1 for screen)
  *   R/L = 0 -> To the right
  * LCD_FUNCTIONSET
  *   DL =  1 -> 8-bit interface data
@@ -47,6 +47,16 @@
 #define LCD_FUNCTIONSET     0b00100000 // 0   0   1  DL   N   F   -   -
 #define LCD_SETCGRAMADDR    0b01000000 // 0   1 ACG ACG ACG ACG ACG ACG
 #define LCD_SETDDRAMADDR    0b10000000 // 1 ADD ADD ADD ADD ADD ADD ADD
+
+#define LCD_ENTRYMODESET_ID_BIT 0b00000010
+#define LCD_ENTRYMODESET_S_BIT  0b00000001
+
+#define LCD_DISPLAYCONTROL_D_BIT  0b00000100
+#define LCD_DISPLAYCONTROL_C_BIT  0b00000010
+#define LCD_DISPLAYCONTROL_B_BIT  0b00000001
+
+#define LCD_CURSORSHIFT_SC_BIT  0b00001000
+#define LCD_CURSORSHIFT_RL_BIT  0b00000100
 
 class TwiLiquidCrystal
 {
@@ -67,22 +77,48 @@ private:
     uint8_t _rows;
     uint8_t _font;
     
-    void set4BitMode();
-public:
-    TwiLiquidCrystal(uint8_t address, uint8_t cols, uint8_t rows, uint8_t font);
+    void set4BitModeRoutine();
+
     void write(uint8_t data);
     void writeQuartet(uint8_t data);
     void setCtrlRegisterBit(uint8_t bit, bool state);
+    void setDsplRegisterBit(uint8_t bit, bool state);
+    void setEntryModeBit(uint8_t bit, bool state);
     void writeCmd(uint8_t data);
+public:
+    TwiLiquidCrystal(uint8_t address, uint8_t cols, uint8_t rows, uint8_t font);
+    
     void print(char* string);
+    void begin();
+
+    void setCursor(uint8_t col, uint8_t row);
     void setBacklight(bool state);
+    void clear();
+    void home();
+
+    // Faster than using LiquidCrystal Library compatible functions
+    // Set multiple bits, send once
     void setFctnRegister(uint8_t bytemode, uint8_t lines, uint8_t font);
     void setDsplControl(uint8_t display, uint8_t cursor, uint8_t blink);
     void setEntryMode(uint8_t increment, uint8_t shift);
-    void setCursor(uint8_t col, uint8_t row);
-    void clear();
-    void home();
-    void begin();
+
+    // LiquidCrystal Library compatible functions
+    // Set one bit, send one bit
+    void backlight();
+    void noBacklight();
+    void display();
+    void noDisplay();
+    void blink();
+    void noBlink();
+    void cursor();
+    void noCursor();
+    void leftToRight();
+    void rightToLeft();
+    void autoscroll();
+    void noAutoscroll();
+
+    void scrollDisplayLeft();
+    void scrollDisplayRight();
 };
 
 #endif
