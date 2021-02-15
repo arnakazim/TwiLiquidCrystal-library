@@ -117,9 +117,15 @@ public:
     void rightToLeft();
     void autoscroll();
     void noAutoscroll();
-
     void scrollDisplayLeft();
     void scrollDisplayRight();
+
+    // WIP! Missing:
+    // void setRowOffsets(int row1, int row2, int row3, int row4);
+    // void command(uint8_t);
+    // implementation of Print.h
+    // Proper constructors/init function
+    // Bug testing
 };
 
 #endif

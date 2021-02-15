@@ -2,4 +2,4 @@
 
 ___A library to interface a HD44780 based LCD via I2C (or TWI in Arduino terms)___
 
-WARNING: The library is working but this is a WIP. Not all function are implemented. Use it with caution (as it may contain bugs).
+WARNING: The library is working but this is a WIP. Not all function are implemented. Use it with caution (as it may contain bugs). (see comment at the end of TwiLiquidCrystal.h file for more information)
