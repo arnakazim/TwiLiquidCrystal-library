@@ -9,42 +9,39 @@ void setup() {
 
 void loop() {
   // Turn on display, cursor and blink
-  lcd.setDsplControl(1, 1, 1);
+  lcd.cursor();
+  lcd.blink();
 
   lcd.print("Hello, World!");
   delay(2000);
 
   // Turn on display and turn off cursor and blink
-  lcd.setDsplControl(1, 0, 0);
+  lcd.noCursor();
+  lcd.noBlink();
 
   // Set cursor to home position (Col 0, Row 0)
   lcd.home();
 
   // Turn ON  backlight
-  lcd.setBacklight(true);
+  lcd.backlight();
   delay(1000);
 
   // Turn OFF backlight
-  lcd.setBacklight(false);
+  lcd.noBacklight();
   delay(1000);
 
   // Turn OFF the display
-  lcd.setDsplControl(0, 0, 0);
+  lcd.noDisplay();
   delay(1000);
 
   // Turn ON the display
-  lcd.setDsplControl(1, 0, 0);
+  lcd.display();
   delay(1000);
 
   // Move the cursor to the second line, 4th column
   lcd.setCursor(3, 1);
   lcd.print("Hello, World!");
-  delay(1000);
 
-  for(int i = 0; i < 16; i++) {
-    lcd.scrollDisplayLeft();
-    delay(250);
-  }
-
+  delay(5000);
   lcd.clear();
 }
