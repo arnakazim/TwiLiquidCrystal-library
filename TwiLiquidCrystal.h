@@ -83,6 +83,8 @@ private:
     uint8_t _cols;
     uint8_t _rows;
     uint8_t _font;
+
+    uint8_t _rowOffsets[4];
     
     void initializationRoutine();
 
@@ -102,13 +104,15 @@ public:
     void setBacklight(bool state);
     void clear();
     void home();
-    void createChar(uint8_t number, uint8_t character[]);
+    void createChar(uint8_t index, uint8_t character[]);
+    void selectScreen(uint8_t index);
 
     // Faster than using LiquidCrystal Library compatible functions
     // Set multiple bits, send one time
     void setFctnRegister(uint8_t bytemode, uint8_t lines, uint8_t font);
     void setDsplControl(uint8_t display, uint8_t cursor, uint8_t blink);
     void setEntryMode(uint8_t increment, uint8_t shift);
+    void setRowOffsets(int row1, int row2, int row3, int row4);
 
     // LiquidCrystal Library compatible functions
     // Set one bit, send one time
@@ -126,10 +130,10 @@ public:
     void noAutoscroll();
     void scrollDisplayLeft();
     void scrollDisplayRight();
+    inline void command(uint8_t value);
 
     // WIP! Missing:
-    // void setRowOffsets(int row1, int row2, int row3, int row4);
-    // void command(uint8_t);
+    // Management of more than 2 lines display (HD44780 can do up to 4 lines)
     // implementation of Print.h
     // Proper constructors/init function
     // Bug testing

@@ -62,6 +62,12 @@ void loop() {
   lcd.setCursor(17, 1);
   lcd.print(txt);
 
+  lcd.selectScreen(1);
+  delay(1000);
+
+  lcd.selectScreen(0);
+  delay(1000);
+
   for(int i = 0; i < 18; i++) {
     lcd.scrollDisplayLeft();
     delay(250);

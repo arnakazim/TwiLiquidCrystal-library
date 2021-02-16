@@ -7,6 +7,25 @@ TwiLiquidCrystal::TwiLiquidCrystal(uint8_t address, uint8_t cols, uint8_t rows, 
   _cols = cols;
   _rows = rows;
   _font = font;
+
+  // set rows start address
+  // On a 16x2:
+  //  line 1, screen 1 [0x00 ; 0x0F]
+  //  line 2, screen 1 [0x40 ; 0x4F]
+  //  line 1, screen 2 [0x10 ; 0x1F]
+  //  line 2, screen 2 [0x50 ; 0x5F]
+  // On a 20x4 (only one screen, HD44780 can only store 80 characters):
+  // (Remark: on a 20x4, incrementing the cursor give this result:
+  //   Line 1 -> Line 3 -> Line 2 -> Line 4)
+  //  line 1, screen 1 [0x00 ; 0x13]
+  //  line 2, screen 1 [0x40 ; 0x53]
+  //  line 3, screen 1 [0x14 ; 0x27]
+  //  line 4, screen 1 [0x54 ; 0x67]
+  setRowOffsets(0x00, 0x40, 0x00 + cols, 0x40 + cols);
+}
+
+void TwiLiquidCrystal::setRowOffsets(int row1, int row2, int row3, int row4) {
+  _rowOffsets[row1, row2, row3, row4];
 }
 
 // write a byte to the I2C bus
@@ -102,11 +121,10 @@ void TwiLiquidCrystal::setEntryMode(uint8_t increment, uint8_t shift) {
 }
 
 void TwiLiquidCrystal::setCursor(uint8_t col, uint8_t row) {
-  uint8_t rowOffsets[] = { 0x00, 0x40 };
 	if ( row > _rows ) {
 		row = _rows - 1; // set row to max row if overflow
 	}
-	writeCmd(LCD_SETDDRAMADDR | (col + rowOffsets[row]));
+	writeCmd(LCD_SETDDRAMADDR | (col + _rowOffsets[row]));
 }
 
 // Clear the display
@@ -140,16 +158,23 @@ void TwiLiquidCrystal::begin() {
   home();
 }
 
-void TwiLiquidCrystal::createChar(uint8_t number, uint8_t character[]) {
-  
-  
-    number &= 0x7; // 7 editable characters
-    writeCmd(LCD_SETCGRAMADDR | (number << 3));
+void TwiLiquidCrystal::createChar(uint8_t index, uint8_t character[]) {
+    index &= 0x7; // 7 editable characters
+
+    writeCmd(LCD_SETCGRAMADDR | (index << 3));
     _ctrlRegister |= RS_BIT; // Set register to DATA
     for (uint8_t i=0; i<8; i++) {
       writeCmd(character[i]);
     }
     _ctrlRegister &= ~RS_BIT; // Reset register to INSTRUCTION
+}
+
+void TwiLiquidCrystal::selectScreen(uint8_t index) {
+  home();
+
+  for (uint8_t i = 0; i < index * _cols; i++) {
+    writeCmd(LCD_CURSORSHIFT | LCD_CURSORSHIFT_SC_BIT);
+  }
 }
 
 void TwiLiquidCrystal::backlight() {
@@ -218,4 +243,8 @@ void TwiLiquidCrystal::scrollDisplayLeft(void) {
 
 void TwiLiquidCrystal::scrollDisplayRight(void) {
   writeCmd(LCD_CURSORSHIFT | LCD_CURSORSHIFT_RL_BIT | LCD_CURSORSHIFT_SC_BIT);
+}
+
+void TwiLiquidCrystal::command(uint8_t value) {
+  writeCmd(value);
 }
