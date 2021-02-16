@@ -1,4 +1,5 @@
 #include <TwiLiquidCrystal.h>
+#include "Print.h"
 
 uint8_t customChar[] = {
   0b00000,
@@ -72,7 +73,11 @@ void loop() {
     lcd.scrollDisplayLeft();
     delay(250);
   }
-  delay(750);
+
+  lcd.clear();
+  lcd.print(';)', HEX);
+
+  delay(1000);
 
   lcd.clear();
 }

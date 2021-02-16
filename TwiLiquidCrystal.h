@@ -3,6 +3,7 @@
 
 #include "Arduino.h"
 #include "Wire.h"
+#include "Print.h"
 
 /*
  * Control bit defintions
@@ -65,7 +66,7 @@
 #define LCD_FUNCTIONSET_N_BIT   0b00001000
 #define LCD_FUNCTIONSET_F_BIT   0b00000100
 
-class TwiLiquidCrystal
+class TwiLiquidCrystal : public Print
 {
 private:
     /*
@@ -88,16 +89,17 @@ private:
     
     void initializationRoutine();
 
-    void write(uint8_t data);
-    void writeQuartet(uint8_t data);
+    virtual size_t write(uint8_t);
+    void send(uint8_t data);
+    void sendQuartet(uint8_t data);
     void setCtrlRegisterBit(uint8_t bit, bool state);
     void setDsplRegisterBit(uint8_t bit, bool state);
     void setEntryModeBit(uint8_t bit, bool state);
-    void writeCmd(uint8_t data);
+    void sendCmd(uint8_t data);
 public:
     TwiLiquidCrystal(uint8_t address, uint8_t cols, uint8_t rows, uint8_t font);
     
-    void print(char* string);
+    // void print(char* string);
     void begin();
 
     void setCursor(uint8_t col, uint8_t row);
@@ -135,7 +137,6 @@ public:
     // WIP! Missing:
     // Management of more than 2 lines display (HD44780 can do up to 20x4 lines)
     // and 40 columns display (40x2 do exists), and every other variants...
-    // implementation of Print.h
     // Proper constructors/init function
     // Bug testing
 };
