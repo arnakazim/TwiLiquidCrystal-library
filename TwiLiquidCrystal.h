@@ -133,7 +133,8 @@ public:
     inline void command(uint8_t value);
 
     // WIP! Missing:
-    // Management of more than 2 lines display (HD44780 can do up to 4 lines)
+    // Management of more than 2 lines display (HD44780 can do up to 20x4 lines)
+    // and 40 columns display (40x2 do exists), and every other variants...
     // implementation of Print.h
     // Proper constructors/init function
     // Bug testing

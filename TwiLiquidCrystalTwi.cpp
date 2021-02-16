@@ -25,7 +25,10 @@ TwiLiquidCrystal::TwiLiquidCrystal(uint8_t address, uint8_t cols, uint8_t rows, 
 }
 
 void TwiLiquidCrystal::setRowOffsets(int row1, int row2, int row3, int row4) {
-  _rowOffsets[row1, row2, row3, row4];
+  _rowOffsets[0] = row1;
+  _rowOffsets[1] = row2;
+  _rowOffsets[2] = row3;
+  _rowOffsets[3] = row4;
 }
 
 // write a byte to the I2C bus
@@ -121,9 +124,9 @@ void TwiLiquidCrystal::setEntryMode(uint8_t increment, uint8_t shift) {
 }
 
 void TwiLiquidCrystal::setCursor(uint8_t col, uint8_t row) {
-	if ( row > _rows ) {
-		row = _rows - 1; // set row to max row if overflow
-	}
+  if ( row > _rows ) {
+    row = _rows - 1; 
+  }
 	writeCmd(LCD_SETDDRAMADDR | (col + _rowOffsets[row]));
 }
 
