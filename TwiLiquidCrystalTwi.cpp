@@ -2,26 +2,8 @@
 #include "Wire.h"
 #include "TwiLiquidCrystal.h"
 
-TwiLiquidCrystal::TwiLiquidCrystal(uint8_t address, uint8_t cols, uint8_t rows, uint8_t font) {
+TwiLiquidCrystal::TwiLiquidCrystal(uint8_t address) {
   _i2cLcdAddress = address;
-  _cols = cols;
-  _rows = rows;
-  _font = font;
-
-  // set rows start address
-  // On a 16x2:
-  //  line 1, screen 1 [0x00 ; 0x0F]
-  //  line 2, screen 1 [0x40 ; 0x4F]
-  //  line 1, screen 2 [0x10 ; 0x1F]
-  //  line 2, screen 2 [0x50 ; 0x5F]
-  // On a 20x4 (only one screen, HD44780 can only store 80 characters):
-  // (Remark: on a 20x4, incrementing the cursor give this result:
-  //   Line 1 -> Line 3 -> Line 2 -> Line 4)
-  //  line 1, screen 1 [0x00 ; 0x13]
-  //  line 2, screen 1 [0x40 ; 0x53]
-  //  line 3, screen 1 [0x14 ; 0x27]
-  //  line 4, screen 1 [0x54 ; 0x67]
-  setRowOffsets(0x00, 0x40, 0x00 + cols, 0x40 + cols);
 }
 
 void TwiLiquidCrystal::setRowOffsets(int row1, int row2, int row3, int row4) {
@@ -73,24 +55,11 @@ void TwiLiquidCrystal::sendQuartet(uint8_t data) {
   delayMicroseconds(42);
 }
 
-// Take a command byte and split it in two quarter (LCD in 4 bit mode)
+// Take a command byte and split it in two quartets (LCD in 4 bit mode)
 void TwiLiquidCrystal::sendCmd(uint8_t data) {
   sendQuartet(data & DATA_PORTION);
   sendQuartet((data << 4) & DATA_PORTION);
 }
-
-// Print a string to LCD
-/*void TwiLiquidCrystal::print(char* string) {
-  _ctrlRegister |= RS_BIT; // Set register to DATA
-  int i = 0;
-
-  while (string[i] != '\0') {
-    sendCmd(string[i]);
-    i++;
-  }
-
-  _ctrlRegister &= ~RS_BIT; // Reset register to INSTRUCTION
-}*/
 
 // Initialization routine to set the LCD to 4 bit mode
 void TwiLiquidCrystal::initializationRoutine() {
@@ -115,9 +84,9 @@ void TwiLiquidCrystal::setBacklight(bool state) {
 }
 
 // set the function register
-// bytemode = 0 -> 4-bit mode; lines = 2 -> 2 lines; font = 0 -> 5x8 dots, 1 = 5x10
-void TwiLiquidCrystal::setFctnRegister(uint8_t bytemode, uint8_t lines, uint8_t font) {
-  _fctnRegister = 0 | (bytemode << 4) | ((lines & 0x2) << 2) | (font << 2);
+// bytemode = 0 -> 4-bit mode; twoLines = 1 -> 2 lines; font = 0 -> 5x8 dots, 1 = 5x10
+void TwiLiquidCrystal::setFctnRegister(uint8_t bytemode, uint8_t twoLines, uint8_t font) {
+  _fctnRegister = 0 | (bytemode << 4) | (twoLines << 3) | (font << 2);
   sendCmd(LCD_FUNCTIONSET | _fctnRegister);
 }
 
@@ -131,8 +100,8 @@ void TwiLiquidCrystal::setEntryMode(uint8_t increment, uint8_t shift) {
   sendCmd(LCD_ENTRYMODESET | _modeRegister);
 }
 
-void TwiLiquidCrystal::setCursor(uint8_t col, uint8_t row) {
-  if ( row > _rows ) {
+void TwiLiquidCrystal::setCursor(uint8_t col, uint8_t row = 0) {
+  if ( row >= _rows | row >= 4) {
     row = _rows - 1; 
   }
 	sendCmd(LCD_SETDDRAMADDR | (col + _rowOffsets[row]));
@@ -150,18 +119,36 @@ void TwiLiquidCrystal::home() {
   delay(2);
 }
 
-void TwiLiquidCrystal::begin() {
+void TwiLiquidCrystal::begin(uint8_t cols, uint8_t rows, uint8_t font) {
   Wire.begin();
+
+  _cols = cols;
+  _rows = rows;
+  _font = font;
+
+  // set rows start address
+  // On a 16x2:
+  //  line 1, screen 1 [0x00 ; 0x0F]
+  //  line 2, screen 1 [0x40 ; 0x4F]
+  //  line 1, screen 2 [0x10 ; 0x1F]
+  //  line 2, screen 2 [0x50 ; 0x5F]
+  // On a 20x4 (only one screen, HD44780 can only store 80 characters):
+  // (Remark: on a 20x4, incrementing the cursor col give this result:
+  //   Line 1 -> Line 3 -> Line 2 -> Line 4)
+  //  line 1, screen 1 [0x00 ; 0x13]
+  //  line 2, screen 1 [0x40 ; 0x53]
+  //  line 3, screen 1 [0x14 ; 0x27]
+  //  line 4, screen 1 [0x54 ; 0x67]
+  setRowOffsets(0x00, 0x40, 0x00 + cols, 0x40 + cols);
+
+  
   delay(1000); // LCD power up time
 
   send(0x00); // clear data line
   initializationRoutine();
 
-  if (_rows > 1) {
-    setFctnRegister(0, 2, 0);
-  } else {
-    setFctnRegister(0, 1, _font);
-  }
+  // first params(byte) = 0 -> Always 4bit
+  setFctnRegister(0, (rows != 1), font);
 
   clear();
   setDsplControl(1, 0, 0);
@@ -244,7 +231,7 @@ void TwiLiquidCrystal::autoscroll(void) {
 
 // This will 'left justify' text from the cursor
 void TwiLiquidCrystal::noAutoscroll(void) {
- setEntryModeBit(LCD_ENTRYMODESET_S_BIT, false);
+  setEntryModeBit(LCD_ENTRYMODESET_S_BIT, false);
   sendCmd(LCD_ENTRYMODESET | _modeRegister);
 }
 

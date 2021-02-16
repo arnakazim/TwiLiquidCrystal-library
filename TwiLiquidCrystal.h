@@ -17,6 +17,9 @@
 #define DATA_PORTION 0b11110000 // D7 D6 D5 D4
 #define CTRL_PORTION 0b00001111 // BL EN RW RS
 
+#define LCD_5x10DOTS 1
+#define LCD_5x8DOTS  0
+
 /*
  * Command definitions
  * 
@@ -97,12 +100,11 @@ private:
     void setEntryModeBit(uint8_t bit, bool state);
     void sendCmd(uint8_t data);
 public:
-    TwiLiquidCrystal(uint8_t address, uint8_t cols, uint8_t rows, uint8_t font);
+    TwiLiquidCrystal(uint8_t address);
     
-    // void print(char* string);
-    void begin();
+    void begin(uint8_t cols, uint8_t rows, uint8_t font = LCD_5x8DOTS);
 
-    void setCursor(uint8_t col, uint8_t row);
+    void setCursor(uint8_t col, uint8_t row = 0);
     void setBacklight(bool state);
     void clear();
     void home();
@@ -111,7 +113,7 @@ public:
 
     // Faster than using LiquidCrystal Library compatible functions
     // Set multiple bits, send one time
-    void setFctnRegister(uint8_t bytemode, uint8_t lines, uint8_t font);
+    void setFctnRegister(uint8_t bytemode, uint8_t lines, uint8_t font = LCD_5x8DOTS);
     void setDsplControl(uint8_t display, uint8_t cursor, uint8_t blink);
     void setEntryMode(uint8_t increment, uint8_t shift);
     void setRowOffsets(int row1, int row2, int row3, int row4);

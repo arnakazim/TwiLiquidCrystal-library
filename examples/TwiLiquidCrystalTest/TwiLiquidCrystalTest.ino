@@ -12,11 +12,11 @@ uint8_t customChar[] = {
   0b00000
 };
 
-TwiLiquidCrystal lcd = TwiLiquidCrystal(0x27, 16, 2, 0);
+TwiLiquidCrystal lcd = TwiLiquidCrystal(0x27);
 
 void setup() {
   // Initialize the LCD
-  lcd.begin();
+  lcd.begin(16, 2, 0);
 
   lcd.createChar(1, customChar);
   lcd.home();
