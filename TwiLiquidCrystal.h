@@ -48,6 +48,9 @@
 #define LCD_SETCGRAMADDR    0b01000000 // 0   1 ACG ACG ACG ACG ACG ACG
 #define LCD_SETDDRAMADDR    0b10000000 // 1 ADD ADD ADD ADD ADD ADD ADD
 
+/* 
+ * Command parameters
+ */
 #define LCD_ENTRYMODESET_ID_BIT 0b00000010
 #define LCD_ENTRYMODESET_S_BIT  0b00000001
 
@@ -57,6 +60,10 @@
 
 #define LCD_CURSORSHIFT_SC_BIT  0b00001000
 #define LCD_CURSORSHIFT_RL_BIT  0b00000100
+
+#define LCD_FUNCTIONSET_DL_BIT  0b00010000
+#define LCD_FUNCTIONSET_N_BIT   0b00001000
+#define LCD_FUNCTIONSET_F_BIT   0b00000100
 
 class TwiLiquidCrystal
 {
@@ -77,7 +84,7 @@ private:
     uint8_t _rows;
     uint8_t _font;
     
-    void set4BitModeRoutine();
+    void initializationRoutine();
 
     void write(uint8_t data);
     void writeQuartet(uint8_t data);

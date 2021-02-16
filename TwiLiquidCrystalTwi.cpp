@@ -62,20 +62,21 @@ void TwiLiquidCrystal::print(char* string) {
   _ctrlRegister &= ~RS_BIT; // Reset register to INSTRUCTION
 }
 
-// Start routine to set the LCD to 4 bit mode
-void TwiLiquidCrystal::set4BitModeRoutine() {
+// Initialization routine to set the LCD to 4 bit mode
+void TwiLiquidCrystal::initializationRoutine() {
   // Init in 8-bit
-  writeQuartet(0x30);
-  delayMicroseconds(4500); // wait min 4.1ms
-  // second try
-  writeQuartet(0x30);
-  delayMicroseconds(4500); // wait min 4.1ms
-  // third go!
-  writeQuartet(0x30); 
-  delayMicroseconds(150);
+  // LiquidCrystal was outputing 0x30 4500µs - 0x30 4500µs 0x30 150µs
+  // The datasheet for the HD44780  says 0x30 4100µs - 0x30 100µs 0x30 no delay...
+  // (HD44780U datasheet, page 45)
+  // It also may be optionnal, useful only when "the power supply conditions for correctly operating the internal reset circuit are not met"
+  writeQuartet(LCD_FUNCTIONSET | LCD_FUNCTIONSET_DL_BIT);
+  delayMicroseconds(4200);
+  writeQuartet(LCD_FUNCTIONSET | LCD_FUNCTIONSET_DL_BIT); 
+  delayMicroseconds(110);
+  writeQuartet(LCD_FUNCTIONSET | LCD_FUNCTIONSET_DL_BIT); 
 
   // set in 4-bit mode (Function set)
-  writeQuartet(0x20);
+  writeQuartet(LCD_FUNCTIONSET);
 }
 
 void TwiLiquidCrystal::setBacklight(bool state) {
@@ -125,7 +126,7 @@ void TwiLiquidCrystal::begin() {
   delay(1000); // LCD power up time
 
   write(0x00); // clear data line
-  set4BitModeRoutine();
+  initializationRoutine();
 
   if (_rows > 1) {
     setFctnRegister(0, 2, 0);
