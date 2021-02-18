@@ -1,3 +1,14 @@
+/*
+  Library created in February 2021
+  by Arnaud Ouvrier (http://www.arnaudouvrier.fr)
+
+  This is free and unencumbered software released into the public domain.
+  For more information, see http://unlicense.org/ or
+  the accompanying (un)LICENSE file
+
+  https://github.com/arnakazim/TwiLiquidCrystal-library
+*/
+
 #ifndef TwiLiquidCrystal_h
 #define TwiLiquidCrystal_h
 
@@ -93,7 +104,6 @@ private:
     
     void initializationRoutine();
 
-    
     void send(uint8_t data);
     void sendQuartet(uint8_t data);
     void setCtrlRegisterBit(uint8_t bit, bool state);
@@ -138,12 +148,6 @@ public:
     void scrollDisplayLeft();
     void scrollDisplayRight();
     inline void command(uint8_t value);
-
-    // WIP! Missing:
-    // Management of more than 2 lines display (HD44780 can do up to 20x4 lines)
-    // and 40 columns display (40x2 do exists), and every other variants...
-    // Proper constructors/init function
-    // Bug testing
 };
 
 #endif

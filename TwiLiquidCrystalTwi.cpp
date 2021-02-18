@@ -1,3 +1,14 @@
+/*
+  Library created in February 2021
+  by Arnaud Ouvrier (http://www.arnaudouvrier.fr)
+
+  This is free and unencumbered software released into the public domain.
+  For more information, see http://unlicense.org/ or
+  the accompanying (un)LICENSE file
+
+  https://github.com/arnakazim/TwiLiquidCrystal-library
+*/
+
 #include "Arduino.h"
 #include "Wire.h"
 #include "TwiLiquidCrystal.h"
@@ -119,6 +130,7 @@ void TwiLiquidCrystal::home() {
   delay(2);
 }
 
+// Setting up and initializig the LCD 
 void TwiLiquidCrystal::begin(uint8_t cols, uint8_t rows, uint8_t font) {
   Wire.begin();
 
