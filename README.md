@@ -57,3 +57,15 @@ Of course you can help! One of my goals is to keep this library active, bug free
 __Why so many delays in the library code?__
 
 The HD44780 is a time sensitive chipset. It needs delays to register commands and execute them. I have reduced them as much as I can, according to the HD44780 datasheet (<https://www.sparkfun.com/datasheets/LCD/HD44780.pdf>). The thing is, the datasheet says that it takes nano seconds for certain action. The library does at best microseconds so there is a bit of time loss there. Also transmitting data over I2C takes time. I don't have an oscilloscope at hand, but I am pretty sure some delays aren't needed anymore or can be shortened...
+
+__Hey! I find your library usefull. Can I buy you a beer?__
+
+Yes of course! You can tip me via my Ko-fi page. If I don't invest it in my future projects, I'll make sure to at least invest it in a beer ;)
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/B0B03OTWP)
+
+__Can I sell a product using your library?__
+
+Haven't you read the licence file? Of course you can! I've made this project in the public domain via the Unlicense license. I did not wrote this library to make money and if it can help others, even to make money, I would make me really happy. And if you make a few bucks with it and you want to thank me, you can help me with a tip (see previous answer).
+
+This is free and unencumbered software released into the public domain. For more information, see http://unlicense.org/ or the accompanying (un)LICENSE file.
