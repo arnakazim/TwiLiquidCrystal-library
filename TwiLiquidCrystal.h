@@ -1,6 +1,7 @@
 #ifndef TwiLiquidCrystal_h
 #define TwiLiquidCrystal_h
 
+#include <inttypes.h>
 #include "Arduino.h"
 #include "Wire.h"
 #include "Print.h"
@@ -92,7 +93,7 @@ private:
     
     void initializationRoutine();
 
-    virtual size_t write(uint8_t);
+    
     void send(uint8_t data);
     void sendQuartet(uint8_t data);
     void setCtrlRegisterBit(uint8_t bit, bool state);
@@ -110,6 +111,8 @@ public:
     void home();
     void createChar(uint8_t index, uint8_t character[]);
     void selectScreen(uint8_t index);
+
+    virtual size_t write(uint8_t);
 
     // Faster than using LiquidCrystal Library compatible functions
     // Set multiple bits, send one time
