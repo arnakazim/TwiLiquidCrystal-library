@@ -111,8 +111,8 @@ void TwiLiquidCrystal::setEntryMode(uint8_t increment, uint8_t shift) {
   sendCmd(LCD_ENTRYMODESET | _modeRegister);
 }
 
-void TwiLiquidCrystal::setCursor(uint8_t col, uint8_t row = 0) {
-  if ( row >= _rows | row >= 4) {
+void TwiLiquidCrystal::setCursor(uint8_t col, uint8_t row) {
+  if ((row >= _rows) | (row >= 4)) {
     row = _rows - 1; 
   }
 	sendCmd(LCD_SETDDRAMADDR | (col + _rowOffsets[row]));
