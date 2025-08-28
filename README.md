@@ -6,6 +6,14 @@ A library to interface an HD44780 based LCD via I2C (or TWI in Arduino terms).
 
 Like its counterpart the LiquidCrystal library, this library allows an Arduino board to control Liquid Crystal displays (LCDs) based on the Hitachi HD44780 (or a compatible) chipset, which is found on most text-based LCDs. The difference is that instead of using multiple digital pins, it communicates with the Arduino via TWI (I2C) with the help of an I2C backpack attached to the LCD.
 
+## Where is hosted the Git repository?
+
+**If you seeing this repository from GitHub**, you should know that this is not where to contribute. This repository is just a mirror of the repository hosted on SourceHut. You can access it here: [https://git.sr.ht/~arnakazim/TwiLiquidCrystal-library](https://git.sr.ht/~arnakazim/TwiLiquidCrystal-library).
+
+I wanted to migrate all my Git repository on SourceHut. Unfortunately, if I want to keep this project in the Arduino Library Manager, I have to host it on GitHub (or GitLab but that's not the point). In order to circumvent this limitation and only have to manage my repository on SourceHut, I have added a build script that mirror this SourceHut repository to GitHub automatically. 
+
+If you want to contribute on this project, please do so on the SourceHut repository.
+
 ## Q&A
 
 __Why another I2C/TWI LCD display library for Arduino?__
