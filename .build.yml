@@ -1,0 +1,11 @@
+image: alpine/edge
+secrets:
+  - cf2f8c95-cdf7-4245-b50f-9393e21bbffe
+sources:
+  - git+ssh://git@git.sr.ht/~arnakazim/TwiLiquidCrystal-library
+tasks:
+  - mirror-to-github: |
+      cd ~/TwiLiquidCrystal-library
+      ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+      git remote add github git@github.com:arnakazim/TwiLiquidCrystal-library.git
+      git push --mirror github
